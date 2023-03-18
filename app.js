@@ -15,7 +15,7 @@ const dishesRoute = require('./routes/dishesRoute')
 const userRoute = require('./routes/userRoute')
 const favoriteDishesRoute = require('./routes/favoriteRoute')
 const checkOutRoute = require('./routes/checkoutRoute')
-
+const orderesRoute = require('./routes/ordersRoute')
 
 const authHandler = require('./middleware/authHandler')
 const errorHandler = require('./middleware/error-handler')
@@ -32,7 +32,7 @@ app.use('/api/v1/dishes' , dishesRoute)
 app.use('/api/v1/auth' , userRoute)
 app.use('/api/v1/favorite' , authHandler , favoriteDishesRoute)
 app.use('/api/v1/checkout' , authHandler , checkOutRoute)
-
+app.use('/api/v1/orderes' , authHandler , orderesRoute)
 
 app.use(errorHandler)
 app.use(notFound)

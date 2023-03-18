@@ -4,14 +4,12 @@ const favoriteDishesSchema = new mongoose.Schema({
     createdBy : {
         type: mongoose.Types.ObjectId ,
         ref : 'Users' ,
-        required : [true , 'you must provide user'],
-        unique : true
+        required : [true , "you must provide user"] ,
     } , 
     disheInformation : {
         type : mongoose.Types.ObjectId , 
         ref : 'Dishes' , 
-        required : [true , "you must provide dishe"] , 
-        
+        required : [true , "you must provide dishe"] ,
     } 
     
 } , {timestamps : true} )

@@ -9,7 +9,7 @@ const getAllFavoriteDishes = async (req,res)=>{
 }
 
 const addFavoriteDishe = async (req,res)=>{
-    console.log(req.user.userId)
+    console.log(req.body)
     const isDisheFavorite = await favoriteModel.exists({createdBy :req.user.userId , disheInformation : req.body.disheInformation })
     console.log(isDisheFavorite) 
     if(isDisheFavorite) {

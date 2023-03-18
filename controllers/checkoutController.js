@@ -4,8 +4,13 @@ const {BadRequestError , NotFoundError , AuthError} = require('../errors/index')
 
 
 const getAllOrderedDishes = async (req,res)=>{
-    const allOrderedDishes = await CheckoutModel.find({orderedBy : req.user.userId}).populate('orderedDishe')
-    res.status(StatusCodes.OK).json({ ordered : allOrderedDishes , nbHits : allOrderedDishes.length , ok : true})
+    const allOrderedDishes = await CheckoutModel.find({orderedBy : req.user.userId})
+    .populate('cart.orderDishe')
+     if(allOrderedDishes.length === 0){
+       return res.status(StatusCodes.OK).json({ ordered : [{cart : [] , _id : ''}] , nbHits :  0 , ok : true}) 
+     }
+    console.log(allOrderedDishes)
+    res.status(StatusCodes.OK).json({ ordered : allOrderedDishes , nbHits : allOrderedDishes.cart ? allOrderedDishes.cart.length : 0 , ok : true})
 }
 
 const addOrderedDishe = async(req,res)=>{
@@ -41,7 +46,7 @@ const updateOrderedDishe = async (req,res)=>{
          {orderedBy : userId , 'cart._id' : orderedDisheId } ,
          {'cart.$.amount' : amount } ,
          {new : true , runValidators : true}
-    )
+    ).populate('cart.orderDishe')
     if(!updatedOrder){
         throw new NotFoundError(`there is no order by ${orderedDisheId} id`)
     }
@@ -57,7 +62,7 @@ const deleteOrderedDishe = async (req,res)=>{
         {orderedBy : userId , 'cart._id' : orderedDisheId } ,
          { $pull : {cart : {_id : orderedDisheId}} } ,
          {new : true , runValidators : true}
-    )
+    ).populate('cart.orderDishe')
     if(!updatedOrder) {
         throw new NotFoundError(`there is no order by ${orderedDisheId} id`)
     }
@@ -67,7 +72,7 @@ const deleteOrderedDishe = async (req,res)=>{
     })
     if(isOrderedEmpty){
        await CheckoutModel.findOneAndRemove({orderedBy : userId})
-       res.status(StatusCodes.OK).send()
+       return res.status(StatusCodes.OK).send()
     }
     res.status(StatusCodes.OK).json({updatedOrder})
 }
